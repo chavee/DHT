@@ -4,6 +4,36 @@ This library is implementation of the DHT sensor. I got the origins of the code 
 [some example code given on the spark forums](http://community.spark.io/t/simple-working-code-for-dht-sensors/3100)
 . Because of it’s simplicity, it has proven to work better than the Adafruit library for me.
 
+## DHT22 Pinout
+
+\# # # # # # # # # # # # #
+
+ \# # # # # # # # # # # # #
+
+\# # # # # # # # # # # # #
+
+ \# # # # # # # # # # # # #
+
+\# # # # # # # # # # # # #
+
+ \# # # # # # # # # # # # #
+
+\# # # # # # # # # # # # #
+
+ \# # # # # # # # # # # # #
+
+\# # # # # # # # # # # # #
+
+ \# # # # # # # # # # # # #
+
+  ||     ||      ||    ||
+
+  ||     ||      ||    ||
+
+  ||     ||      ||    ||
+
+VCC ----DATA ----------GND
+
 ## How to use
 
 Check out the tests folder for details, but essentially you have to call `init()` in the

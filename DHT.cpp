@@ -1,4 +1,3 @@
-
 #include "DHT.h"
 
 #define DHT11 11
@@ -31,15 +30,21 @@ int8_t DHT::read(){
 
     while(true){switch(place){
     case 0:
+        start = millis();
+    place = 1; case 1:
+        if((uint16_t)(millis() - start) < MIN_PERIOD){
+            return false; // will return true only once
+        }
+
         digitalWrite(_pin, LOW);
         pinMode(_pin, OUTPUT);
 
         start = millis();
-        place = 1;
-    case 1:
+    place = 2; case 2:
         if((uint16_t)(millis() - start) < 20){
             return false;
         }
+
         noInterrupts();
         digitalWrite(_pin, HIGH);
         pinMode(_pin, INPUT_PULLUP);
@@ -64,7 +69,6 @@ int8_t DHT::read(){
         interrupts();
 
         if (data[4] != ((data[0] + data[1] + data[2] + data[3]) & 0xFF)) {
-            valid = false;
             goto error;
         }
 
@@ -87,18 +91,12 @@ int8_t DHT::read(){
                 goto error;
         }
         valid = true;
-        start = millis();
-        place = 2;
+        place = 0;
         return true;
 error:
-    start = millis();
-    out = -1;
-    case 2:
-        place = 2;
-        if((uint16_t)(millis() - start) < MIN_PERIOD){
-            return out; // will return true only once
-        }
+        valid = false;
         place = 0;
+        return -1;
     }}
 }
 
