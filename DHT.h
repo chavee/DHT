@@ -22,5 +22,4 @@ private:
     uint8_t _type;
     uint8_t place = 0;
 };
-
 #endif
