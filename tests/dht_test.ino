@@ -9,7 +9,7 @@ void setup(){
 }
 
 void loop(){
-    if(dht.read()){
+    if(dht.read() = true){
         Serial.print("Temperature C:\t"); Serial.println(dht.temperature);
         Serial.print("Humidity:\t"); Serial.println(dht.humidity);
     }
