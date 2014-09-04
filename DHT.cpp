@@ -1,15 +1,18 @@
-int dht = D0;
-int rh = 0;
-int temp = 0;
+
+#include "DHT.h"
+
+#define DHT11 11
+#define DHT22 22
+#define DHT21 21
+#define AM2301 21
 
 DHT::DHT(uint8_t pin, uint8_t type){
     _pin = pin;
     _type = type;
 }
 
-
 void DHT::init(){
-    digitalWrite(pin, HIGH);
+    digitalWrite(_pin, HIGH);
     pinMode(_pin, INPUT_PULLUP);
 }
 
@@ -21,14 +24,14 @@ void DHT::init(){
         if(_noblock == 255) return -1; \
     }
 
-
 int8_t DHT::read(){
     static uint8_t place;
     static uint16_t start;
+    int8_t out = 0;
     uint8_t _noblock;
     uint8_t data[5] = {0, 0, 0, 0, 0};
 
-    switch(place){
+    while(true){switch(place){
     case 0:
         digitalWrite(_pin, LOW);
         pinMode(_pin, OUTPUT);
@@ -64,27 +67,39 @@ int8_t DHT::read(){
 
         if (data[4] != ((data[0] + data[1] + data[2] + data[3]) & 0xFF)) {
             valid = false;
-            goto end;
+            goto error;
         }
 
-        humidity = ((data[0] << 8) + data[1]);
-        humidity /= 10;
-        temperature = (((data[2] bitand 0x7F) << 8) + data[3]);
-        temperature /= 10;
-        if(data[2] bitand 0x80){
-            temperature *= -1;
+        switch(_type){
+            case DHT11:
+                humidity = data[0];
+                temperature = data[2];
+                break;
+            case DHT21:
+            case DHT22:
+                humidity = ((data[0] << 8) + data[1]);
+                humidity /= 10;
+                temperature = (((data[2] bitand 0x7F) << 8) + data[3]);
+                temperature /= 10;
+                if(data[2] bitand 0x80){
+                    temperature *= -1;
+                }
+                break;
+            default:
+                goto error;
         }
         valid = true;
         start = millis();
         place = 2;
         return true;
-end:
+error:
+    out = -1;
     case 2:
         place = 2;
         if((uint16_t)(millis() - start) < MIN_PERIOD){
             return false; // will return true only once
         }
         place = 0;
-    }
+    }}
 }
 
