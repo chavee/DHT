@@ -21,5 +21,6 @@ private:
     uint8_t _pin;
     uint8_t _type;
     uint8_t place = 0;
+    uint16_t start;
 };
 #endif

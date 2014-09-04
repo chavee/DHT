@@ -25,8 +25,6 @@ void DHT::init(){
     }
 
 int8_t DHT::read(){
-    static uint8_t place;
-    static uint16_t start;
     int8_t out = 0;
     uint8_t _noblock;
     uint8_t data[5] = {0, 0, 0, 0, 0};
@@ -93,11 +91,12 @@ int8_t DHT::read(){
         place = 2;
         return true;
 error:
+    start = millis();
     out = -1;
     case 2:
         place = 2;
         if((uint16_t)(millis() - start) < MIN_PERIOD){
-            return false; // will return true only once
+            return out; // will return true only once
         }
         place = 0;
     }}
